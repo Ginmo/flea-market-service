@@ -4,7 +4,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const jwtSecret = require('../jwt-secret.json');
 
-router.get('/', (req, res) => {
+router.post('/', (req, res) => {
     const body = {
         username: req.user.username,
         id: req.user.id
