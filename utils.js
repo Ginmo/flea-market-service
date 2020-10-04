@@ -15,7 +15,6 @@ const utils = {
         return new Promise(function (resolve, reject) {
             db.query('SELECT * FROM users').then(results => {
                 for (let i = 0; i < results.length; i++) {
-                    console.log(results[i].username);
                     if (username === results[i].username && bcrypt.compareSync(password, results[i].password) == true) {
                         resolve(results[i]);
                         return;
@@ -27,19 +26,30 @@ const utils = {
                 reject(error);
             });
         });
-
-
-        /*
-        if (username === users[0].username) {
-            if (bcrypt.compareSync(password, users[0].password) == true) {
-                return users[0];
-            } else {
+    },
+    checkIfUsernameIsAvailabe: (username) => {
+        return new Promise(function (resolve, reject) {
+            db.query('SELECT * FROM users').then(results => {
+                for (let i = 0; i < results.length; i++) {
+                    if (username === results[i].username) {
+                        resolve(false);
+                        return;
+                    }
+                }
+                resolve(true);
+            }).catch(error => {
+                console.log(error);
+                reject(error);
+            });
+        });
+    },
+    checkIfUserObjectIsCorrect: (newUser) => {
+        for (const property in newUser) {
+            if (newUser[property] == undefined) {
                 return false;
             }
-        } else {
-            return false;
         }
-        */
+        return true;
     }
 
 }
