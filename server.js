@@ -20,18 +20,22 @@ const BasicStrategy = require('passport-http').BasicStrategy;
 const jwtSecret = require('./jwt-secret.json');
 
 // Passport Basic Strategy for checking user login
-passport.use(new BasicStrategy(
-    function (username, password, done) {
+passport.use(new BasicStrategy(async (username, password, done) => {
 
-        const user = utils.checkUserLogin(username, password);
+    try {
+        const user = await utils.checkUserLogin(username, password);
         if (user == false) {
             console.log("HTTP Basic username or password not found");
             return done(null, false, { message: "HTTP Basic username or password not found" });
         } else {
             return done(null, user);
         }
-
+    } catch (error) {
+        return done("error");
     }
+
+
+}
 ));
 
 // JWT options

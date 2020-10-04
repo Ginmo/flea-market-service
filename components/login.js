@@ -4,10 +4,11 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const jwtSecret = require('../jwt-secret.json');
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
+    const user = await req.user;
     const body = {
-        username: req.user.username,
-        id: req.user.id
+        username: user.username,
+        id: user.idUsers
     };
 
     const payload = {
