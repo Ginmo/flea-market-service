@@ -2,10 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const db = require('./database');
 const utils = require('./utils');
+require('dotenv').config()
 
 const app = express();
 app.use(bodyParser.json());
-const port = 3000;
 let server = null;
 
 // Components
@@ -67,28 +67,17 @@ app.get('/', (req, res) => {
     res.send('Flea Market Service API');
 });
 
-
 module.exports = {
     close: () => {
         server.close();
-        console.log("Server closed.");
+        db.close();
     },
-    start: (mode) => {
-        let databaseName = 'fleamarket';
-        if (mode == "test") {
-            databaseName = 'fleamarket-test';
-        }
-        db.init(databaseName).then(() => {
-            db.checkConnection().then(() => {
-                server = app.listen(port, () => {
-                    console.log(`Listening on http://localhost:${port}\n`);
-                });
-            }).catch(error => {
-                console.log("DB connection refused");
-                console.log(error);
+    start: () => {
+        db.start().then(() => {
+            server = app.listen(process.env.PORT, () => {
+                console.log(`Listening on http://localhost:${process.env.PORT}\n`);
             });
         }).catch(error => {
-            console.log("DB init error");
             console.log(error);
         });
     }

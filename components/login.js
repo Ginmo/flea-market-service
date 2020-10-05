@@ -3,6 +3,7 @@ const router = express.Router();
 
 const jwt = require('jsonwebtoken');
 const jwtSecret = require('../jwt-secret.json');
+const utils = require('../utils');
 
 router.post('/', async (req, res) => {
     const user = await req.user;

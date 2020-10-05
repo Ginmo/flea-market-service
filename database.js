@@ -1,50 +1,30 @@
-let mysql = require("mysql");
-let pool = null;
+const mongoose = require('mongoose');
 
-const db = {
-    init: (databaseName) => {
-        return new Promise((resolve, reject) => {
-            try {
-                pool = mysql.createPool({
-                    connectionLimit: 10,
-                    host: 'localhost',
-                    user: 'root',
-                    password: 'test',
-                    database: databaseName
-                });
-                resolve();
-            } catch (error) {
-                console.log('Mysql pool create failed');
-                console.log(error);
-                reject(error)
-            }
-        });
-    },
-    checkConnection: () => {
-        return new Promise((resolve, reject) => {
-            db.query("SELECT version()").then(results => {
-                resolve(results);
-            }).catch(error => {
-                reject(error);
+const methods = {
+    start: () => {
+        return new Promise(function (resolve, reject) {
+            //mongoose.connect('mongodb+srv://queue-user-1:X4zJNXDjBWkF44U@cluster0.8yekt.mongodb.net/FleaMarket', {
+            mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@cluster0.8yekt.mongodb.net/${process.env.MONGO_DB}`, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            }, (error) => {
+                if (!error) {
+                    console.log("Connected to MongoDB");
+                    resolve();
+                } else {
+                    console.log("Error in MongoDB Connection...");
+                    console.log(error);
+                    reject(error);
+                }
             });
         });
     },
-    query: (query, ...parameters) => {
-        let promise = new Promise(function (resolve, reject) {
-            pool.query(query, ...parameters, (error, results, fields) => {
-                if (error) {
-                    reject(error)
-                };
-
-                resolve(results);
-            })
-        });
-
-        return promise;
-    },
-    closeAll: () => {
-        pool.end();
+    close: () => {
+        mongoose.close();
     }
-};
+}
 
-module.exports = db;
+
+require('./db_models/users.model');
+
+module.exports = methods;
