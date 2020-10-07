@@ -5,7 +5,7 @@ router.get('/', (req, res) => {
     res.send("List ITEMS based on category, location, startDate, endDate");
 });
 
-router.post('/:itemId', (req, res) => {
+router.put('/:itemId', (req, res) => {
     const itemId = req.params.itemId;
     if (itemId !== undefined) {
         res.sendStatus(201);
