@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
         if (pn.isValid() === true) {
             user.save((error, doc) => {
                 if (!error) {
-                    res.sendStatus(200);
+                    res.sendStatus(201);
                 } else {
                     console.log(error);
                     if (error.code === 11000) {
