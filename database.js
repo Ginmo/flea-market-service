@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const methods = {
     start: () => {
         return new Promise(function (resolve, reject) {
-            //mongoose.connect('mongodb+srv://queue-user-1:X4zJNXDjBWkF44U@cluster0.8yekt.mongodb.net/FleaMarket', {
             mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@cluster0.8yekt.mongodb.net/${process.env.MONGO_DB}`, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
@@ -26,5 +25,6 @@ const methods = {
 
 
 require('./db_models/users.model');
+require('./db_models/items.model');
 
 module.exports = methods;
