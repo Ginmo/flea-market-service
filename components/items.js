@@ -9,6 +9,25 @@ const fs = require('fs');
 
 var upload = multerUpload.array('Images', 4)
 
+router.get('/', (req, res) => {
+    const id = req.user.id
+    Item.find({ "user_id": id })
+        .then(data => {
+            if (data.length < 1) {
+                res.send("You do not have any items listed.");
+            } else {
+                res.send(data);
+            }
+
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving tutorials."
+            });
+        });
+});
+
 router.post('/', (req, res) => {
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
@@ -86,7 +105,17 @@ router.put('/:itemId', (req, res) => {
 router.delete('/:itemId', (req, res) => {
     const itemId = req.params.itemId;
     if (itemId !== undefined) {
-        res.sendStatus(201);
+        Item.findByIdAndRemove(itemId, { useFindAndModify: false })
+            .then(data => {
+                if (!data) {
+                    res.status(404).send({ message: "Item not found." });
+                } else {
+                    res.send({ message: "Item deleted." });
+                }
+            })
+            .catch(err => {
+                res.status(500).send({ message: "Error while trying to delete item." });
+            });
     } else {
         res.status(400).send("Missing ID of item");
     }
