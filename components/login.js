@@ -9,7 +9,7 @@ router.post('/', async (req, res) => {
     const user = await req.user;
     const body = {
         username: user.username,
-        id: user.idUsers
+        id: user._id
     };
 
     const payload = {
