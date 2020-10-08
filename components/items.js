@@ -21,24 +21,21 @@ router.get('/', (req, res) => {
 
         })
         .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving tutorials."
-            });
+            res.status(500).send({ message: "Error while trying to get your items." });
         });
 });
 
 router.post('/', (req, res) => {
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
-            res.status(400).send("Check image key and limit (4)");
+            res.status(400).send({ message: "Check image key and limit (4)" });
             return;
         } else if (err) {
-            res.send(400).send("Unknown reason");
+            res.send(400).send({ message: "Unknown reason" });
         }
         for (let i = 0; i < req.files.length; i++) {
             if (req.files[i].mimetype != "image/png" && req.files[i].mimetype != "image/jpeg") {
-                res.status(400).send("Not supported format. Use png/jpeg for images.");
+                res.status(400).send({ message: "Not supported format. Use png/jpeg for images." });
                 return;
             }
         }

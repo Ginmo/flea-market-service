@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
         user.address.country = req.body.address.country;
         user.password = req.body.password;
     } catch (error) {
-        res.sendStatus(400);
+        res.status(400).send({ message: "Missing some properties from request." });
         return;
     }
 
@@ -35,17 +35,17 @@ router.post('/', async (req, res) => {
                 } else {
                     console.log(error);
                     if (error.code === 11000) {
-                        res.status(400).send("Username already in use");
+                        res.status(400).send({ message: "Username already in use" });
                     } else {
-                        res.sendStatus(400);
+                        res.status(500).send({ message: "Error while trying to insert into database." });
                     }
                 }
             });
         } else {
-            res.status(400).send("Check your phonenumber. It should match your country.");
+            res.status(400).send({ message: "Check your phonenumber. It should match your country." });
         }
     } else {
-        res.status(400).send('Use country code for country (Example: FI for Finland).');
+        res.status(400).send({ message: "Use country code for country (Example: FI for Finland)." });
     }
 });
 
