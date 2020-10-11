@@ -3,11 +3,14 @@ const router = express.Router();
 const mongoose = require('mongoose');
 require('../database');
 const Item = mongoose.model('Item');
+const fs = require('fs');
+const categories = require('../categories.json');
+
+// multer
 const multer = require('multer');
 const multerUpload = multer({ dest: 'images/' });
-const fs = require('fs');
+const upload = multerUpload.array('Images', 4)
 
-var upload = multerUpload.array('Images', 4)
 
 router.get('/', (req, res) => {
     const id = req.user.id
@@ -39,10 +42,14 @@ router.post('/', (req, res) => {
                 return;
             }
         }
+        if (categories.indexOf(req.body.category) === -1) {
+            res.status(400).send({ message: "Incorrect category." });
+            return;
+        }
+
         var item = new Item();
         req.files.forEach((f, index) => {
             let imageType = "";
-            console.log(f.originalname.substring(f.originalname.length - 3, f.originalname.length));
             if (f.originalname.substring(f.originalname.length - 3, f.originalname.length) === "PNG") {
                 imageType = "PNG"
             }
