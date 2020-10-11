@@ -81,7 +81,7 @@ router.post('/', (req, res) => {
             if (!error) {
                 res.sendStatus(201);
             } else {
-                res.sendStatus(400);
+                res.status(500).send({ message: "Error while trying to add item." });
             }
         });
 
@@ -95,7 +95,7 @@ router.put('/:itemId', (req, res) => {
     if (itemId !== undefined) {
         res.sendStatus(201);
     } else {
-        res.status(400).send("Missing ID of item");
+        res.status(400).send({ message: "Missing ID of item" });
     }
 });
 
@@ -114,7 +114,7 @@ router.delete('/:itemId', (req, res) => {
                 res.status(500).send({ message: "Error while trying to delete item." });
             });
     } else {
-        res.status(400).send("Missing ID of item");
+        res.status(400).send({ message: "Missing ID of item" });
     }
 });
 
