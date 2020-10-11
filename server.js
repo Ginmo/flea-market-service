@@ -13,6 +13,7 @@ const registerComponent = require('./components/register');
 const loginComponent = require('./components/login');
 const itemsComponent = require('./components/items');
 const searchComponent = require('./components/search');
+const usersComponent = require('./components/users');
 
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy, ExtractJwt = require('passport-jwt').ExtractJwt;
@@ -62,6 +63,7 @@ app.use('/register', registerComponent);
 app.use('/login', passport.authenticate('basic', { session: false }), loginComponent);
 app.use('/items', passport.authenticate('jwt', { session: false }), itemsComponent);
 app.use('/search', searchComponent);
+app.use('/users', passport.authenticate('jwt', { session: false }), usersComponent);
 
 app.get('/', (req, res) => {
     res.send('Flea Market Service API');
