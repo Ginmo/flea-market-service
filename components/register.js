@@ -9,7 +9,7 @@ require('../database');
 const User = mongoose.model('User');
 
 router.post('/', async (req, res) => {
-    var user = new User();
+    let user = new User();
     try {
         user.username = req.body.username;
         user.firstname = req.body.firstname;
@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
     }
 
     if (getName(user.address.country) !== undefined) {
-        var pn = new PhoneNumber(user.phonenumber, user.address.country);
+        let pn = new PhoneNumber(user.phonenumber, user.address.country);
         if (pn.isValid() === true) {
             user.save((error, doc) => {
                 if (!error) {

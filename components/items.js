@@ -47,7 +47,7 @@ router.post('/', (req, res) => {
             return;
         }
 
-        var item = new Item();
+        let item = new Item();
         req.files.forEach((f, index) => {
             let imageType = "";
             if (f.originalname.substring(f.originalname.length - 3, f.originalname.length) === "PNG") {
