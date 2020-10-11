@@ -8,6 +8,7 @@ const categories = require('../categories.json');
 
 // multer
 const multer = require('multer');
+const { resolveNaptr } = require('dns');
 const multerUpload = multer({ dest: 'images/' });
 const upload = multerUpload.array('Images', 4)
 
@@ -97,10 +98,95 @@ router.post('/', (req, res) => {
 
 });
 
-router.put('/:itemId', (req, res) => {
+router.put('/info/:itemId', (req, res) => {
     const itemId = req.params.itemId;
     if (itemId !== undefined) {
-        res.sendStatus(201);
+        if (req.body.date !== undefined) {
+            res.status(400).send({ message: "Cannot update date." });
+            return;
+        }
+        Item.findByIdAndUpdate(itemId, req.body, { useFindAndModify: false })
+            .then(data => {
+                if (!data) {
+                    res.status(404).send({ message: "Item not found." });
+                } else {
+                    res.sendStatus(201);
+                }
+            })
+            .catch(err => {
+                res.status(500).send({ message: "Error while trying to find item." });
+            });
+    } else {
+        res.status(400).send({ message: "Missing ID of item" });
+    }
+});
+
+router.put('/images/:itemId', (req, res) => {
+    const itemId = req.params.itemId;
+    if (itemId !== undefined) {
+        upload(req, res, function (err) {
+            if (req.files === undefined) {
+                res.status(400).send({ message: "Nothing to add." });
+                return;
+            }
+            if (err instanceof multer.MulterError) {
+                res.status(400).send({ message: "Check image key and limit (4)" });
+                return;
+            } else if (err) {
+                res.send(400).send({ message: "Unknown reason" });
+            }
+
+            for (let i = 0; i < req.files.length; i++) {
+                if (req.files[i].mimetype != "image/png" && req.files[i].mimetype != "image/jpeg") {
+                    res.status(400).send({ message: "Not supported format. Use png/jpeg for images." });
+                    return;
+                }
+            }
+
+            let images = {
+                image1: "",
+                image2: "",
+                image3: "",
+                image4: ""
+            };
+
+            req.files.forEach((f, index) => {
+                let imageType = "";
+                if (f.originalname.substring(f.originalname.length - 3, f.originalname.length) === "PNG") {
+                    imageType = "PNG"
+                }
+                else if (f.originalname.substring(f.originalname.length - 3, f.originalname.length) === "JPG") {
+                    imageType = "JPG"
+                }
+                fs.renameSync(f.path, './images/' + f.filename + "." + imageType);
+
+                if (index === 0) {
+                    images.image1 = f.filename + "." + imageType
+                }
+                else if (index === 1) {
+                    images.image2 = f.filename + "." + imageType
+                }
+                else if (index === 2) {
+                    images.image3 = f.filename + "." + imageType
+                }
+                else if (index === 3) {
+                    images.image4 = f.filename + "." + imageType
+                }
+            });
+            Item.findByIdAndUpdate(itemId, { "images.image1": images.image1, "images.image2": images.image2, "images.image3": images.image3, "images.image4": images.image4, },
+                { useFindAndModify: false })
+                .then(data => {
+                    if (!data) {
+                        res.status(404).send({ message: "Item not found." });
+                    } else {
+                        res.sendStatus(201);
+                    }
+                })
+                .catch(err => {
+                    res.status(500).send({ message: "Error while trying to find item." });
+                });
+
+        });
     } else {
         res.status(400).send({ message: "Missing ID of item" });
     }
