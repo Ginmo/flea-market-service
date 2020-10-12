@@ -32,6 +32,26 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
     upload(req, res, function (err) {
+        console.log(req.body);
+        let item = new Item();
+        const id = req.user.id
+        const date = new Date().toLocaleString("fi-FI", { timeZone: "Europe/Helsinki" })
+        try {
+            item.title = req.body.title;
+            item.description = req.body.description;
+            item.category = req.body.category;
+            item.location = req.body.location;
+
+            item.price = req.body.price;
+            item.date = date;
+            item.deliveryType = req.body.deliveryType;
+            item.user_id = id;
+        } catch {
+            res.status(400).send({ message: "Missing some properties from request." });
+            return;
+        }
+
+
         if (err instanceof multer.MulterError) {
             res.status(400).send({ message: "Check image key and limit (4)" });
             return;
@@ -53,7 +73,7 @@ router.post('/', (req, res) => {
             return;
         }
 
-        let item = new Item();
+
         req.files.forEach((f, index) => {
             let imageType = "";
             if (f.originalname.substring(f.originalname.length - 3, f.originalname.length) === "PNG") {
@@ -77,18 +97,6 @@ router.post('/', (req, res) => {
                 item.images.image4 = f.filename + "." + imageType
             }
         });
-        const id = req.user.id
-        const date = new Date().toLocaleString("fi-FI", { timeZone: "Europe/Helsinki" })
-
-        item.title = req.body.title;
-        item.description = req.body.description;
-        item.category = req.body.category;
-        item.location = req.body.location;
-
-        item.price = req.body.price;
-        item.date = date;
-        item.deliveryType = req.body.deliveryType;
-        item.user_id = id;
 
         item.save((error, doc) => {
             if (!error) {
