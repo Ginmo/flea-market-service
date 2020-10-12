@@ -35,73 +35,70 @@ router.post('/', (req, res) => {
         let item = new Item();
         const id = req.user.id
         const date = new Date().toLocaleString("fi-FI", { timeZone: "Europe/Helsinki" })
-        try {
-            item.title = req.body.title;
-            item.description = req.body.description;
-            item.category = req.body.category;
-            item.location = req.body.location;
 
-            item.price = req.body.price;
-            item.date = date;
-            item.deliveryType = req.body.deliveryType;
-            item.user_id = id;
-        } catch {
-            res.status(400).send({ message: "Missing some properties from request." });
-            return;
-        }
+        item.title = req.body.title;
+        item.description = req.body.description;
+        item.category = req.body.category;
+        item.location = req.body.location;
+
+        item.price = req.body.price;
+        item.date = date;
+        item.deliveryType = req.body.deliveryType;
+        item.user_id = id;
 
 
-        if (err instanceof multer.MulterError) {
-            res.status(400).send({ message: "Check image key and limit (4)" });
-            return;
-        } else if (err) {
-            res.send(400).send({ message: "Unknown reason" });
-        }
-        for (let i = 0; i < req.files.length; i++) {
-            if (req.files[i].mimetype != "image/png" && req.files[i].mimetype != "image/jpeg") {
-                res.status(400).send({ message: "Not supported format. Use png/jpeg for images." });
+        if (req.files !== undefined) {
+            if (err instanceof multer.MulterError) {
+                res.status(400).send({ message: "Check image key and limit (4)" });
+                return;
+            } else if (err) {
+                res.send(400).send({ message: "Unknown reason" });
+            }
+            for (let i = 0; i < req.files.length; i++) {
+                if (req.files[i].mimetype != "image/png" && req.files[i].mimetype != "image/jpeg") {
+                    res.status(400).send({ message: "Not supported format. Use png/jpeg for images." });
+                    return;
+                }
+            }
+            if (categories.indexOf(req.body.category) === -1) {
+                res.status(400).send({ message: "Incorrect category." });
                 return;
             }
-        }
-        if (categories.indexOf(req.body.category) === -1) {
-            res.status(400).send({ message: "Incorrect category." });
-            return;
-        }
-        if (deliveryTypes.indexOf(req.body.deliveryType) === -1) {
-            res.status(400).send({ message: "Incorrect delivery type." });
-            return;
-        }
+            if (deliveryTypes.indexOf(req.body.deliveryType) === -1) {
+                res.status(400).send({ message: "Incorrect delivery type." });
+                return;
+            }
 
+            req.files.forEach((f, index) => {
+                let imageType = "";
+                if (f.originalname.substring(f.originalname.length - 3, f.originalname.length) === "PNG") {
+                    imageType = "PNG"
+                }
+                else if (f.originalname.substring(f.originalname.length - 3, f.originalname.length) === "JPG") {
+                    imageType = "JPG"
+                }
+                fs.renameSync(f.path, './images/' + f.filename + "." + imageType);
 
-        req.files.forEach((f, index) => {
-            let imageType = "";
-            if (f.originalname.substring(f.originalname.length - 3, f.originalname.length) === "PNG") {
-                imageType = "PNG"
-            }
-            else if (f.originalname.substring(f.originalname.length - 3, f.originalname.length) === "JPG") {
-                imageType = "JPG"
-            }
-            fs.renameSync(f.path, './images/' + f.filename + "." + imageType);
-
-            if (index === 0) {
-                item.images.image1 = f.filename + "." + imageType
-            }
-            else if (index === 1) {
-                item.images.image2 = f.filename + "." + imageType
-            }
-            else if (index === 2) {
-                item.images.image3 = f.filename + "." + imageType
-            }
-            else if (index === 3) {
-                item.images.image4 = f.filename + "." + imageType
-            }
-        });
+                if (index === 0) {
+                    item.images.image1 = f.filename + "." + imageType
+                }
+                else if (index === 1) {
+                    item.images.image2 = f.filename + "." + imageType
+                }
+                else if (index === 2) {
+                    item.images.image3 = f.filename + "." + imageType
+                }
+                else if (index === 3) {
+                    item.images.image4 = f.filename + "." + imageType
+                }
+            });
+        }
 
         item.save((error, doc) => {
             if (!error) {
                 res.sendStatus(201);
             } else {
-                res.status(500).send({ message: "Error while trying to add item." });
+                res.status(500).send({ message: "Error while trying to add item. Probably missing some properties." });
             }
         });
 
