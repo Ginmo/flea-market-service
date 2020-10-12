@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
                 } else {
                     console.log(error);
                     if (error.code === 11000) {
-                        res.status(400).send({ message: "Username already in use" });
+                        res.status(400).send({ message: "Username already in use." });
                     } else {
                         res.status(500).send({ message: "Error while trying to insert into database." });
                     }
