@@ -9,6 +9,9 @@ const app = express();
 app.use(bodyParser.json());
 let server = null;
 
+const swaggerUi = require('swagger-ui-express');
+const openApiDocumentation = require('./FleaMarketService.v1.json');
+
 // Components
 const registerComponent = require('./components/register');
 const loginComponent = require('./components/login');
@@ -65,6 +68,7 @@ app.use('/login', passport.authenticate('basic', { session: false }), loginCompo
 app.use('/items', passport.authenticate('jwt', { session: false }), itemsComponent);
 app.use('/search', searchComponent);
 app.use('/users', passport.authenticate('jwt', { session: false }), usersComponent);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocumentation));
 
 app.get('/', (req, res) => {
     res.send('Flea Market Service API');

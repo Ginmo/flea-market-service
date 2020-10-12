@@ -1,0 +1,755 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "FleaMarketService",
+    "version": "1.0",
+    "contact": {
+      "name": "Kimmo Juusola"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Register new user",
+        "operationId": "post-register",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "message": "Reason of error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "firstname": {
+                    "type": "string"
+                  },
+                  "lastname": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phonenumber": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "object",
+                    "required": [
+                      "street",
+                      "postcode",
+                      "city",
+                      "country"
+                    ],
+                    "properties": {
+                      "street": {
+                        "type": "string"
+                      },
+                      "postcode": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string",
+                        "description": "ISO 3166"
+                      }
+                    }
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username",
+                  "firstname",
+                  "lastname",
+                  "email",
+                  "phonenumber",
+                  "address"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "username": "KimmoJ",
+                    "firstname": "Kimmo",
+                    "lastname": "Juusola",
+                    "email": "kimmo.juusola@osoite.fi",
+                    "phonenumber": "+358 401234567",
+                    "address": {
+                      "street": "Osoite 1 A 10",
+                      "postcode": "90100",
+                      "city": "Oulu",
+                      "country": "FI"
+                    },
+                    "password": "123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Creater new user in service"
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Login user",
+        "operationId": "post-login",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "token": "jwt-token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "message": "Reason of error"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "examples": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "Encoded login username and password"
+            },
+            "in": "header",
+            "name": "Basic",
+            "description": "",
+            "required": true
+          }
+        ],
+        "description": "Logins user in service"
+      }
+    },
+    "/items/{itemId}": {
+      "post": {
+        "summary": "Add new item",
+        "operationId": "post-items",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "HTTP-Bearer": []
+          }
+        ],
+        "description": "Add new item for sale",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number"
+                  },
+                  "deliveryType": {
+                    "type": "string"
+                  },
+                  "Images": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "title",
+                  "description",
+                  "category",
+                  "location",
+                  "price",
+                  "deliveryType"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "title": "string",
+                    "description": "string",
+                    "category": "string",
+                    "location": "string",
+                    "price": 0,
+                    "deliveryType": "string",
+                    "Images": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Max 4 images"
+        }
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "itemId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "delete": {
+        "summary": "Delete item",
+        "operationId": "delete-items-itemId",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "message": "Reason of error"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "description": "Delete item from sale",
+        "security": [
+          {
+            "HTTP-Bearer": []
+          }
+        ]
+      }
+    },
+    "/search": {
+      "get": {
+        "summary": "Search items",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "operationId": "get-search",
+        "description": "Search items from service",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "examples": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "category"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "location",
+            "description": "Name of city"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "startDate",
+            "description": "ISO 8601"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "endDate",
+            "description": "ISO 8601"
+          }
+        ]
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "summary": "Get contact information",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactInformation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "operationId": "get-users",
+        "description": "Get contact information of given user id",
+        "security": [
+          {
+            "HTTP-Bearer": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "userId",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/items/info/{itemId}": {
+      "put": {
+        "summary": "",
+        "operationId": "put-items-info",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "HTTP-Bearer": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number"
+                  },
+                  "deliveryType": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Property to be edited"
+        },
+        "parameters": []
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "itemId",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/items/images/{itemId}": {
+      "put": {
+        "summary": "",
+        "operationId": "put-items-images",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "description": "Edit images of item",
+        "parameters": [],
+        "security": [
+          {
+            "HTTP-Bearer": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Images": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Images to be edited (Max 4 images)"
+        }
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "itemId",
+          "in": "path",
+          "required": true
+        }
+      ]
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserInformation": {
+        "title": "UserInformation",
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "firstname": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phonenumber": {
+            "type": "string"
+          },
+          "address": {
+            "type": "object",
+            "required": [
+              "street",
+              "postcode",
+              "city",
+              "country"
+            ],
+            "properties": {
+              "street": {
+                "type": "string"
+              },
+              "postcode": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "country": {
+                "type": "string",
+                "description": "ISO 3166"
+              }
+            }
+          }
+        },
+        "required": [
+          "username",
+          "firstname",
+          "lastname",
+          "email",
+          "phonenumber",
+          "address"
+        ],
+        "description": "Includes information of user"
+      },
+      "ErrorResponse": {
+        "title": "ErrorResponse",
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "description": "Basic response model for errors"
+      },
+      "ItemInformation": {
+        "title": "ItemInformation",
+        "type": "object",
+        "description": "Includes information of item on sale",
+        "x-examples": {
+          "example-1": {
+            "title": "string",
+            "description": "string",
+            "category": "string",
+            "location": "string",
+            "images": {
+              "image1": "string",
+              "image2": "string",
+              "image3": "string",
+              "image4": "string"
+            },
+            "price": 0,
+            "date": "string",
+            "deliveryType": "string",
+            "contactInformation": {
+              "firstname": "string",
+              "lastname": "string",
+              "email": "string",
+              "phonenumber": "string"
+            }
+          }
+        },
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "images": {
+            "type": "object",
+            "properties": {
+              "image1": {
+                "type": "string",
+                "format": "binary"
+              },
+              "image2": {
+                "type": "string",
+                "format": "binary"
+              },
+              "image3": {
+                "type": "string",
+                "format": "binary"
+              },
+              "image4": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          },
+          "price": {
+            "type": "number"
+          },
+          "date": {
+            "type": "string",
+            "description": ""
+          },
+          "deliveryType": {
+            "type": "string"
+          },
+          "contactInformation": {
+            "type": "object",
+            "required": [
+              "firstname",
+              "lastname",
+              "email",
+              "phonenumber"
+            ],
+            "properties": {
+              "firstname": {
+                "type": "string"
+              },
+              "lastname": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "phonenumber": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "category",
+          "location",
+          "price",
+          "date",
+          "deliveryType"
+        ]
+      },
+      "ContactInformation": {
+        "title": "ContactInformation",
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "firstname": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phonenumber": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "HTTP-Bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
