@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
         user.address.postcode = req.body.address.postcode;
         user.address.city = req.body.address.city;
         user.address.country = req.body.address.country;
-        user.password = req.body.password;
+        user.password = bcrypt.hashSync(req.body.password, 6);
     } catch (error) {
         res.status(400).send({ message: "Missing some properties from request." });
         return;
