@@ -5,6 +5,7 @@ require('../database');
 const Item = mongoose.model('Item');
 const fs = require('fs');
 const categories = require('../categories.json');
+const deliveryTypes = require('../delivery-types.json');
 
 // multer
 const multer = require('multer');
@@ -45,6 +46,10 @@ router.post('/', (req, res) => {
         }
         if (categories.indexOf(req.body.category) === -1) {
             res.status(400).send({ message: "Incorrect category." });
+            return;
+        }
+        if (deliveryTypes.indexOf(req.body.deliveryType) === -1) {
+            res.status(400).send({ message: "Incorrect delivery type." });
             return;
         }
 
