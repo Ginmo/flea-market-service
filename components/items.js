@@ -110,6 +110,19 @@ router.put('/info/:itemId', (req, res) => {
             res.status(400).send({ message: "Cannot update date." });
             return;
         }
+        if (req.body.category !== undefined) {
+            if (categories.indexOf(req.body.category) === -1) {
+                res.status(400).send({ message: "Incorrect category." });
+                return;
+            }
+        }
+        if (req.body.deliveryType !== undefined) {
+            if (deliveryTypes.indexOf(req.body.deliveryType) === -1) {
+                res.status(400).send({ message: "Incorrect delivery type." });
+                return;
+            }
+        }
+
         Item.findByIdAndUpdate(itemId, req.body, { useFindAndModify: false })
             .then(data => {
                 if (!data) {
