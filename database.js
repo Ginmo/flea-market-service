@@ -25,7 +25,7 @@ const methods = {
         });
     },
     close: () => {
-        mongoose.close();
+        mongoose.disconnect();
     }
 }
 

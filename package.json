@@ -4,7 +4,7 @@
   "description": "Service where people can buy and sell used items",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,9 @@
     "passport-jwt": "^4.0.0"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^8.1.3",
     "nodemon": "^2.0.4"
   }
 }

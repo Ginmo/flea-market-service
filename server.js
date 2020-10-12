@@ -74,6 +74,7 @@ module.exports = {
     close: () => {
         server.close();
         db.close();
+        console.log("Server closed.");
     },
     start: (mode) => {
         db.start(mode).then(() => {
