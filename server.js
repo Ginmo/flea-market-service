@@ -75,8 +75,8 @@ module.exports = {
         server.close();
         db.close();
     },
-    start: () => {
-        db.start().then(() => {
+    start: (mode) => {
+        db.start(mode).then(() => {
             server = app.listen(port, () => {
                 console.log("Server started");
             });

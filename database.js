@@ -1,9 +1,15 @@
 const mongoose = require('mongoose');
 
 const methods = {
-    start: () => {
+    start: (mode) => {
         return new Promise(function (resolve, reject) {
-            mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@cluster0.8yekt.mongodb.net/${process.env.MONGO_DB}`, {
+            let mongoDB;
+            if (mode === "test") {
+                mongoDB = process.env.MONGO_DB_TEST;
+            } else {
+                mongoDB = process.env.MONGO_DB;
+            }
+            mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@cluster0.8yekt.mongodb.net/${mongoDB}`, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             }, (error) => {
