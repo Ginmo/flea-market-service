@@ -32,7 +32,6 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
     upload(req, res, function (err) {
-        console.log(req.body);
         let item = new Item();
         const id = req.user.id
         const date = new Date().toLocaleString("fi-FI", { timeZone: "Europe/Helsinki" })
