@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const db = require('./database');
 const utils = require('./utils');
 require('dotenv').config()
+port = process.env.PORT || 3000;
 
 const app = express();
 app.use(bodyParser.json());
@@ -76,8 +77,8 @@ module.exports = {
     },
     start: () => {
         db.start().then(() => {
-            server = app.listen(process.env.PORT, () => {
-                console.log(`Listening on http://localhost:${process.env.PORT}\n`);
+            server = app.listen(port, () => {
+                console.log("Server started");
             });
         }).catch(error => {
             console.log(error);
