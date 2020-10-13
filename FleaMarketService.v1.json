@@ -195,7 +195,7 @@
         "description": "Logins user in service"
       }
     },
-    "/items/{itemId}": {
+    "/items": {
       "post": {
         "summary": "Add new item",
         "operationId": "post-items",
@@ -270,18 +270,19 @@
             }
           },
           "description": "Max 4 images"
-        }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "itemId",
+            "required": true
+          }
+        ]
       },
-      "parameters": [
-        {
-          "schema": {
-            "type": "string"
-          },
-          "name": "itemId",
-          "in": "path",
-          "required": true
-        }
-      ],
+      "parameters": [],
       "delete": {
         "summary": "Delete item",
         "operationId": "delete-items-itemId",
