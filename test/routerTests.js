@@ -274,6 +274,26 @@ describe('Flea Market API operations', () => {
                     expect.fail(error)
                 });
         });
+
+        it('Should fail when price is not a number', async () => {
+            await chai.request(apiUrl)
+                .post('/items')
+                .set('Authorization', `Bearer ${testJwt}`)
+                .field('title', 'testTitle')
+                .field('description', 'testDescription')
+                .field('category', 'clothes')
+                .field('location', 'Oulu')
+                .field('price', "dd")
+                .field('deliveryType', 'pickup')
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(500);
+                    expect(response.text).to.equal('{"message":"Item validation failed: price: Cast to Number failed for value \\"dd\\" at path \\"price\\""}');
+                })
+                .catch(error => {
+                    expect.fail(error)
+                });
+        });
     });
 
 });
