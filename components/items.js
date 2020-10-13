@@ -98,7 +98,7 @@ router.post('/', (req, res) => {
             if (!error) {
                 res.sendStatus(201);
             } else {
-                res.status(500).send({ message: "Error while trying to add item. Probably missing some properties." });
+                res.status(500).send({ message: error.message });
             }
         });
 
