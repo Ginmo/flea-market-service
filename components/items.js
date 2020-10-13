@@ -222,7 +222,7 @@ router.delete('/:itemId', (req, res) => {
                 if (!data) {
                     res.status(404).send({ message: "Item not found." });
                 } else {
-                    res.statusCode(201);
+                    res.sendStatus(201);
                 }
             })
             .catch(err => {
