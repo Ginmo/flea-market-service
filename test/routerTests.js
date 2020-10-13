@@ -502,4 +502,48 @@ describe('Flea Market API operations', () => {
         });
     });
 
+
+    describe('Update item info', () => {
+        let testJwt = null;
+        before(async () => {
+            await chai.request(apiUrl)
+                .post('/login')
+                .auth('testuser', '123')
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(200);
+                    expect(response.body).to.have.property('token');
+                    testJwt = response.body.token;
+                });
+        });
+
+        it('Should update given info', async () => {
+            await chai.request(apiUrl)
+                .put('/items/info/5f842016ac6e63273caeca96')
+                .set('Authorization', `Bearer ${testJwt}`)
+                .send({ category: "cars" })
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(201);
+                })
+                .catch(error => {
+                    expect.fail(error)
+                });
+        });
+
+        it('Should not update item info that is not yours', async () => {
+            await chai.request(apiUrl)
+                .put('/items/info/5f85782038d26c1ab8cb0185')
+                .set('Authorization', `Bearer ${testJwt}`)
+                .send({ category: "cars" })
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(403);
+                })
+                .catch(error => {
+                    expect.fail(error)
+                });
+        });
+    });
+
 });
