@@ -10,3 +10,8 @@
 ### Delivery types
 * pickup
 * mail
+
+# Tests
+Tests only implemented to use locally:
+
+    npm test -- --exit
