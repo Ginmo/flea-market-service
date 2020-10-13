@@ -4,6 +4,7 @@ chai.use(chaiHttp);
 const server = require('../server');
 
 const expect = chai.expect;
+const assert = require('assert').strict;
 const apiUrl = 'http://localhost:3000';
 
 function createTestUser(username, phonenumber, country) {
@@ -187,7 +188,6 @@ describe('Flea Market API operations', () => {
         });
 
 
-        /*
         it('Should create new item', async () => {
             await chai.request(apiUrl)
                 .post('/items')
@@ -206,7 +206,6 @@ describe('Flea Market API operations', () => {
                     expect.fail(error)
                 });
         });
-        */
 
         it('Should get your own items', async () => {
             await chai.request(apiUrl)
@@ -295,5 +294,124 @@ describe('Flea Market API operations', () => {
                 });
         });
     });
+
+
+    describe('Delete item', () => {
+
+        let itemId = null;
+        before(async () => {
+            await chai.request(apiUrl)
+                .get('/search')
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(200);
+                    itemId = response.body[response.body.length - 1]._id;
+                    assert.notStrictEqual(itemId, null);
+                });
+        });
+
+        let testJwt = null;
+        before(async () => {
+            await chai.request(apiUrl)
+                .post('/login')
+                .auth('testuser', '123')
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(200);
+                    expect(response.body).to.have.property('token');
+                    testJwt = response.body.token;
+                });
+        });
+
+        it('Should delete last item', async () => {
+            await chai.request(apiUrl)
+                .delete('/items/' + itemId)
+                .set('Authorization', `Bearer ${testJwt}`)
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(201);
+                })
+                .catch(error => {
+                    expect.fail(error)
+                });
+        });
+
+    });
+
+
+    describe('Search item', () => {
+
+        it('Should find something', async () => {
+            await chai.request(apiUrl)
+                .get('/search')
+                .then(response => {
+                    console.log(response.body[response.body.length - 1]._id);
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(200);
+                })
+                .catch(error => {
+                    expect.fail(error)
+                });
+        });
+
+
+        it('Should fail with start date being in wrong format', async () => {
+            await chai.request(apiUrl)
+                .get('/search')
+                .query({ startDate: "11-12-2020" })
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(400);
+                    expect(response.text).to.equal('{"message":"Use format YYYY-MM-DD in search."}');
+                })
+                .catch(error => {
+                    expect.fail(error)
+                });
+        });
+
+        it('Should fail with end date being in wrong format', async () => {
+            await chai.request(apiUrl)
+                .get('/search')
+                .query({ endDate: "11-12-2020" })
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(400);
+                    expect(response.text).to.equal('{"message":"Use format YYYY-MM-DD in search."}');
+                })
+                .catch(error => {
+                    expect.fail(error)
+                });
+        });
+
+        it('Should not find anything with incorrect category', async () => {
+            await chai.request(apiUrl)
+                .get('/search')
+                .query({ category: "somethingwrong" })
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(404);
+                    expect(response.text).to.equal('{"message":"No matches with given parameters."}');
+                })
+                .catch(error => {
+                    expect.fail(error)
+                });
+        });
+
+        it('Should not find anything with incorrect location', async () => {
+            await chai.request(apiUrl)
+                .get('/search')
+                .query({ location: "somethingwrong" })
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(404);
+                    expect(response.text).to.equal('{"message":"No matches with given parameters."}');
+                })
+                .catch(error => {
+                    expect.fail(error)
+                });
+        });
+
+    });
+
 
 });
