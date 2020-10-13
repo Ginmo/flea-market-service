@@ -93,10 +93,17 @@ const utils = {
 
                 }
             }
-
-
-
         });
+    },
+    getDate: () => {
+        var d = new Date();
+        var finnishTime = d.getTime() + (d.getTimezoneOffset() * 60000);
+        d = new Date(finnishTime + (3600000 * 3));
+        var month = d.getMonth() + 1;
+        var date = d.getFullYear() + "-" + month + "-" + d.getDate() +
+            " " + d.getHours() + ":" + (d.getMinutes() < 10 ? '0' : '') + d.getMinutes() +
+            ":" + (d.getSeconds() < 10 ? '0' : '') + d.getSeconds();
+        return date;
     }
 
 }

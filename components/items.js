@@ -6,10 +6,10 @@ const Item = mongoose.model('Item');
 const fs = require('fs');
 const categories = require('../categories.json');
 const deliveryTypes = require('../delivery-types.json');
+const utils = require('../utils');
 
 // multer
 const multer = require('multer');
-const { resolveNaptr } = require('dns');
 const multerUpload = multer({ dest: 'images/' });
 const upload = multerUpload.array('Images', 4)
 
@@ -34,7 +34,7 @@ router.post('/', (req, res) => {
     upload(req, res, function (err) {
         let item = new Item();
         const id = req.user.id
-        const date = new Date().toLocaleString("fi-FI", { timeZone: "Europe/Helsinki" })
+        const date = utils.getDate();
 
         item.title = req.body.title;
         item.description = req.body.description;
