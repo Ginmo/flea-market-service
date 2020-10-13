@@ -30,7 +30,6 @@ passport.use(new BasicStrategy(async (username, password, done) => {
     try {
         const user = await utils.checkUserLogin(username, password);
         if (user == false) {
-            console.log("HTTP Basic username or password not found");
             return done(null, false, { message: "HTTP Basic username or password not found" });
         } else {
             return done(null, user);
@@ -50,9 +49,6 @@ options.secretOrKey = jwtSecret.secret;
 
 // Passport Jwt Strategy for checking if token is valid
 passport.use(new JwtStrategy(options, function (jwt_payload, done) {
-    console.log("Processing JWT payload for token content:");
-    console.log(jwt_payload);
-
     const now = Date.now() / 1000;
     if (jwt_payload.exp > now) {
         done(null, jwt_payload.user);
