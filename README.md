@@ -1,5 +1,7 @@
 # flea-market-service
 
+JWT expire time: 2 minutes
+
 ## In demo version these are possible to use:
 
 ### Categories
