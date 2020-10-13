@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
 
         })
         .catch(err => {
-            res.status(500).send({ message: "Error while trying to get your items." });
+            res.status(500).send({ message: error.message });
         });
 });
 
@@ -143,7 +143,7 @@ router.put('/info/:itemId', (req, res) => {
                 }
             })
             .catch(err => {
-                res.status(500).send({ message: "Error while trying to find item." });
+                res.status(500).send({ message: error.message });
             });
     } else {
         res.status(400).send({ message: "Missing ID of item" });
@@ -212,7 +212,7 @@ router.put('/images/:itemId', (req, res) => {
                     }
                 })
                 .catch(err => {
-                    res.status(500).send({ message: "Error while trying to find item." });
+                    res.status(500).send({ message: error.message });
                 });
 
         });
@@ -233,7 +233,7 @@ router.delete('/:itemId', (req, res) => {
                 }
             })
             .catch(err => {
-                res.status(500).send({ message: "Error while trying to delete item." });
+                res.status(500).send({ message: error.message });
             });
     } else {
         res.status(400).send({ message: "Missing ID of item" });
