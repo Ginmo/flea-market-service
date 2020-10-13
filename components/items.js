@@ -221,8 +221,8 @@ router.put('/images/:itemId', (req, res) => {
     }
 });
 
-router.delete('/:itemId', (req, res) => {
-    const itemId = req.params.itemId;
+router.delete('/', (req, res) => {
+    const itemId = req.query.itemId;
     if (itemId !== undefined) {
         Item.findByIdAndRemove(itemId, { useFindAndModify: false })
             .then(data => {
