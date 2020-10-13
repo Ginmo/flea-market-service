@@ -468,5 +468,38 @@ describe('Flea Market API operations', () => {
     });
 
 
+    describe('Get contact information', () => {
+        let testJwt = null;
+        before(async () => {
+            await chai.request(apiUrl)
+                .post('/login')
+                .auth('testuser', '123')
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(200);
+                    expect(response.body).to.have.property('token');
+                    testJwt = response.body.token;
+                });
+        });
+
+        it('Should find contact information', async () => {
+            await chai.request(apiUrl)
+                .get('/users/5f841ff3ac6e63273caeca95')
+                .set('Authorization', `Bearer ${testJwt}`)
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(200);
+                    expect(response.body).to.have.property('_id');
+                    expect(response.body).to.have.property('username');
+                    expect(response.body).to.have.property('firstname');
+                    expect(response.body).to.have.property('lastname');
+                    expect(response.body).to.have.property('email');
+                    expect(response.body).to.have.property('phonenumber');
+                })
+                .catch(error => {
+                    expect.fail(error)
+                });
+        });
+    });
 
 });
