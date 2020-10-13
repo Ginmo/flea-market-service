@@ -25,7 +25,7 @@ router.get('/', (req, res) => {
             }
 
         })
-        .catch(err => {
+        .catch(error => {
             res.status(500).send({ message: error.message });
         });
 });
@@ -142,7 +142,7 @@ router.put('/info/:itemId', (req, res) => {
 
                 }
             })
-            .catch(err => {
+            .catch(error => {
                 res.status(500).send({ message: error.message });
             });
     } else {
@@ -161,7 +161,7 @@ router.put('/images/:itemId', (req, res) => {
             if (err instanceof multer.MulterError) {
                 res.status(400).send({ message: "Check image key and limit (4)" });
                 return;
-            } else if (err) {
+            } else {
                 res.send(400).send({ message: "Unknown reason" });
             }
 
@@ -211,7 +211,7 @@ router.put('/images/:itemId', (req, res) => {
                         res.sendStatus(201);
                     }
                 })
-                .catch(err => {
+                .catch(error => {
                     res.status(500).send({ message: error.message });
                 });
 
@@ -232,7 +232,7 @@ router.delete('/:itemId', (req, res) => {
                     res.sendStatus(201);
                 }
             })
-            .catch(err => {
+            .catch(error => {
                 res.status(500).send({ message: error.message });
             });
     } else {
