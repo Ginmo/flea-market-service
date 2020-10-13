@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const utils = require('../utils');
 const { getName } = require('country-list');
 const PhoneNumber = require('awesome-phonenumber');
 const mongoose = require('mongoose');
