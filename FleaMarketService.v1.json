@@ -271,24 +271,15 @@
           },
           "description": "Max 4 images"
         },
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "name": "itemId",
-            "required": true
-          }
-        ]
+        "parameters": []
       },
       "parameters": [],
       "delete": {
         "summary": "Delete item",
         "operationId": "delete-items-itemId",
         "responses": {
-          "200": {
-            "description": "OK"
+          "201": {
+            "description": "Created"
           },
           "400": {
             "description": "Bad Request",
@@ -315,6 +306,16 @@
         "security": [
           {
             "HTTP-Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "itemId",
+            "required": true
           }
         ]
       }
