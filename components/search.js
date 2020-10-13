@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
             res.send(result);
         }
     } catch (error) {
-        res.status(500).send({ message: "Error while trying to find items." })
+        res.status(500).send({ message: error.message })
     }
 });
 
