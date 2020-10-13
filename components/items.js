@@ -109,6 +109,8 @@ router.post('/', (req, res) => {
 
 router.put('/info/:itemId', (req, res) => {
     const itemId = req.params.itemId;
+    const userId = req.user.id;
+
     if (itemId !== undefined) {
         if (req.body.date !== undefined) {
             res.status(400).send({ message: "Cannot update date." });
@@ -132,7 +134,12 @@ router.put('/info/:itemId', (req, res) => {
                 if (!data) {
                     res.status(404).send({ message: "Item not found." });
                 } else {
-                    res.sendStatus(201);
+                    if (userId === data.user_id) {
+                        res.sendStatus(201);
+                    } else {
+                        res.sendStatus(403);
+                    }
+
                 }
             })
             .catch(err => {
