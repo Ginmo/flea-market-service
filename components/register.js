@@ -10,19 +10,20 @@ const User = mongoose.model('User');
 
 router.post('/', async (req, res) => {
     let user = new User();
-    try {
-        user.username = req.body.username;
-        user.firstname = req.body.firstname;
-        user.lastname = req.body.lastname;
-        user.email = req.body.email;
-        user.phonenumber = req.body.phonenumber;
-        user.address.street = req.body.address.street;
-        user.address.postcode = req.body.address.postcode;
-        user.address.city = req.body.address.city;
-        user.address.country = req.body.address.country;
-        user.password = bcrypt.hashSync(req.body.password, 6);
-    } catch (error) {
-        res.status(400).send({ message: "Missing some properties from request." });
+
+    user.username = req.body.username;
+    user.firstname = req.body.firstname;
+    user.lastname = req.body.lastname;
+    user.email = req.body.email;
+    user.phonenumber = req.body.phonenumber;
+    user.address.street = req.body.address.street;
+    user.address.postcode = req.body.address.postcode;
+    user.address.city = req.body.address.city;
+    user.address.country = req.body.address.country;
+    user.password = bcrypt.hashSync(req.body.password, 6);
+
+    if (user.address.country === undefined) {
+        res.status(400).send({ message: "Missing country from request." });
         return;
     }
 
@@ -36,7 +37,7 @@ router.post('/', async (req, res) => {
                     if (error.code === 11000) {
                         res.status(400).send({ message: "Username already in use." });
                     } else {
-                        res.status(500).send({ message: "Error while trying to insert into database." });
+                        res.status(500).send({ message: error.message });
                     }
                 }
             });
