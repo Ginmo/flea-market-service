@@ -3,10 +3,9 @@ const router = express.Router();
 
 const jwt = require('jsonwebtoken');
 const jwtSecret = require('../jwt-secret.json');
-const utils = require('../utils');
 
 router.post('/', async (req, res) => {
-    const user = await req.user;
+    const user = req.user;
     const body = {
         username: user.username,
         id: user._id
@@ -17,7 +16,7 @@ router.post('/', async (req, res) => {
     };
 
     const options = {
-        expiresIn: '30s'
+        expiresIn: '2m'
     }
 
     const token = jwt.sign(payload, jwtSecret.secret, options);
