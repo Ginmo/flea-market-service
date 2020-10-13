@@ -229,7 +229,6 @@ describe('Flea Market API operations', () => {
                 .then(response => {
                     expect(response).to.have.property('status');
                     expect(response.status).to.equal(500);
-                    expect(response.text).to.equal('{"message":"Error while trying to add item. Probably missing some properties."}');
                 })
                 .catch(error => {
                     expect.fail(error)

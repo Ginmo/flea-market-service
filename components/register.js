@@ -10,17 +10,21 @@ const User = mongoose.model('User');
 
 router.post('/', async (req, res) => {
     let user = new User();
-
-    user.username = req.body.username;
-    user.firstname = req.body.firstname;
-    user.lastname = req.body.lastname;
-    user.email = req.body.email;
-    user.phonenumber = req.body.phonenumber;
-    user.address.street = req.body.address.street;
-    user.address.postcode = req.body.address.postcode;
-    user.address.city = req.body.address.city;
-    user.address.country = req.body.address.country;
-    user.password = bcrypt.hashSync(req.body.password, 6);
+    try {
+        user.username = req.body.username;
+        user.firstname = req.body.firstname;
+        user.lastname = req.body.lastname;
+        user.email = req.body.email;
+        user.phonenumber = req.body.phonenumber;
+        user.address.street = req.body.address.street;
+        user.address.postcode = req.body.address.postcode;
+        user.address.city = req.body.address.city;
+        user.address.country = req.body.address.country;
+        user.password = bcrypt.hashSync(req.body.password, 6);
+    } catch (error) {
+        res.status(400).send({ message: "Missing some properties from request." });
+        return;
+    }
 
     if (user.address.country === undefined) {
         res.status(400).send({ message: "Missing country from request." });
