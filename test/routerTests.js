@@ -36,7 +36,7 @@ function createTestItem() {
     return testItem;
 }
 
-describe('Weather Station API operations', () => {
+describe('Flea Market API operations', () => {
 
     before(function () {
         server.start("test");
