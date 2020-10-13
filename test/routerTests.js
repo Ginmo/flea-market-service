@@ -410,8 +410,63 @@ describe('Flea Market API operations', () => {
                     expect.fail(error)
                 });
         });
-
     });
+
+
+    describe('Get own items', () => {
+        let testJwt = null;
+        let testJwt2 = null;
+        before(async () => {
+            await chai.request(apiUrl)
+                .post('/login')
+                .auth('testuser', '123')
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(200);
+                    expect(response.body).to.have.property('token');
+                    testJwt = response.body.token;
+                });
+        });
+        before(async () => {
+            await chai.request(apiUrl)
+                .post('/login')
+                .auth('testuser2', '123')
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(200);
+                    expect(response.body).to.have.property('token');
+                    testJwt2 = response.body.token;
+                });
+        });
+
+        it('Should find something', async () => {
+            await chai.request(apiUrl)
+                .get('/items')
+                .set('Authorization', `Bearer ${testJwt}`)
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(200);
+                })
+                .catch(error => {
+                    expect.fail(error)
+                });
+        });
+
+        it('Should not find anything', async () => {
+            await chai.request(apiUrl)
+                .get('/items')
+                .set('Authorization', `Bearer ${testJwt2}`)
+                .then(response => {
+                    expect(response).to.have.property('status');
+                    expect(response.status).to.equal(200);
+                    expect(response.text).to.equal('{"message":"You do not have any items listed."}');
+                })
+                .catch(error => {
+                    expect.fail(error)
+                });
+        });
+    });
+
 
 
 });
