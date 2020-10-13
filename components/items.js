@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
     Item.find({ "user_id": id })
         .then(data => {
             if (data.length < 1) {
-                res.send("You do not have any items listed.");
+                res.send({ message: "You do not have any items listed." });
             } else {
                 res.send(data);
             }
