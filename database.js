@@ -12,6 +12,7 @@ const methods = {
             mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@cluster0.8yekt.mongodb.net/${mongoDB}`, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
+                useCreateIndex: true
             }, (error) => {
                 if (!error) {
                     console.log("Connected to MongoDB");
